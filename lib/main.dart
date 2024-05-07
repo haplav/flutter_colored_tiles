@@ -8,13 +8,14 @@ class PositionedTiles extends StatefulWidget {
   const PositionedTiles();
 
   @override
-  State<StatefulWidget> createState() => PositionedTilesState();
+  State<StatefulWidget> createState() => PositionedTilesState(3);
 }
 
 class PositionedTilesState extends State<PositionedTiles> {
+  int count;
   List<Widget> tiles = [];
 
-  PositionedTilesState() {
+  PositionedTilesState(this.count) {
     newTiles();
   }
 
@@ -45,14 +46,11 @@ class PositionedTilesState extends State<PositionedTiles> {
   }
 
   void swapTiles() {
-    tiles.insert(1, tiles.removeAt(0));
+    tiles.insert(0, tiles.removeLast());
   }
 
   void newTiles() {
-    tiles = [
-      ColorfulTile(),
-      ColorfulTile(),
-    ];
+    tiles = List.generate(count, (index) => ColorfulTile());
   }
 }
 
