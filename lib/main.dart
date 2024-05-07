@@ -50,7 +50,14 @@ class PositionedTilesState extends State<PositionedTiles> {
   }
 
   void newTiles() {
-    tiles = List.generate(count, (index) => ColorfulTile(UniqueColorGenerator.getColor()));
+    Set<Color> colorSet = {};
+    while (colorSet.length < count) {
+      var newColor = UniqueColorGenerator.getColor();
+      if (!colorSet.contains(newColor)) {
+        colorSet.add(newColor);
+      }
+    }
+    tiles = colorSet.map((e) => ColorfulTile(e)).toList();
   }
 }
 
