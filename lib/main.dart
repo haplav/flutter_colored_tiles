@@ -20,7 +20,10 @@ class PositionedTilesState extends State<PositionedTiles> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(children: tiles),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(children: tiles),
+      ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
