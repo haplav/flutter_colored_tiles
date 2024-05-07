@@ -21,9 +21,21 @@ class PositionedTilesState extends State<PositionedTiles> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Row(children: tiles),
-      floatingActionButton: FloatingActionButton(
-        onPressed: swapTiles,
-        child: const Icon(Icons.sentiment_very_satisfied),
+      floatingActionButton: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            onPressed: swapTiles,
+            tooltip: "Swap tiles",
+            child: const Icon(Icons.swap_horiz),
+          ),
+          const SizedBox(width: 10.0),
+          FloatingActionButton(
+            onPressed: newTiles,
+            tooltip: "New colors",
+            child: const Icon(Icons.refresh),
+          ),
+        ],
       ),
     );
   }
@@ -31,6 +43,15 @@ class PositionedTilesState extends State<PositionedTiles> {
   swapTiles() {
     setState(() {
       tiles.insert(1, tiles.removeAt(0));
+    });
+  }
+
+  newTiles() {
+    setState(() {
+      tiles = [
+        ColorfulTile(),
+        ColorfulTile(),
+      ];
     });
   }
 }
