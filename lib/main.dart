@@ -50,14 +50,14 @@ class PositionedTilesState extends State<PositionedTiles> {
   }
 
   void newTiles() {
-    tiles = List.generate(count, (index) => ColorfulTile());
+    tiles = List.generate(count, (index) => ColorfulTile(UniqueColorGenerator.getColor()));
   }
 }
 
 class ColorfulTile extends StatelessWidget {
   final Color myColor;
 
-  ColorfulTile() : myColor = UniqueColorGenerator.getColor();
+  ColorfulTile(this.myColor);
 
   @override
   Widget build(BuildContext context) {
