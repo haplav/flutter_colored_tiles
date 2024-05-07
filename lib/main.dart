@@ -12,10 +12,11 @@ class PositionedTiles extends StatefulWidget {
 }
 
 class PositionedTilesState extends State<PositionedTiles> {
-  List<Widget> tiles = [
-    ColorfulTile(),
-    ColorfulTile(),
-  ];
+  List<Widget> tiles = [];
+
+  PositionedTilesState() {
+    newTiles();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +29,13 @@ class PositionedTilesState extends State<PositionedTiles> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
-            onPressed: swapTiles,
+            onPressed: () => setState(swapTiles),
             tooltip: "Swap tiles",
             child: const Icon(Icons.swap_horiz),
           ),
           const SizedBox(width: 10.0),
           FloatingActionButton(
-            onPressed: newTiles,
+            onPressed: () => setState(newTiles),
             tooltip: "New colors",
             child: const Icon(Icons.refresh),
           ),
@@ -43,19 +44,15 @@ class PositionedTilesState extends State<PositionedTiles> {
     );
   }
 
-  swapTiles() {
-    setState(() {
-      tiles.insert(1, tiles.removeAt(0));
-    });
+  void swapTiles() {
+    tiles.insert(1, tiles.removeAt(0));
   }
 
-  newTiles() {
-    setState(() {
-      tiles = [
-        ColorfulTile(),
-        ColorfulTile(),
-      ];
-    });
+  void newTiles() {
+    tiles = [
+      ColorfulTile(),
+      ColorfulTile(),
+    ];
   }
 }
 
