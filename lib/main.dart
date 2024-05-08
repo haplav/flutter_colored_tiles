@@ -2,27 +2,30 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MaterialApp(home: PositionedTiles()));
+void main() => runApp(const MaterialApp(home: PositionedTiles(3)));
 
 class PositionedTiles extends StatefulWidget {
-  const PositionedTiles({super.key});
+  final int count;
+
+  const PositionedTiles(this.count, {super.key});
 
   @override
-  State<StatefulWidget> createState() => PositionedTilesState(3);
+  State<StatefulWidget> createState() => PositionedTilesState();
 }
 
 class PositionedTilesState extends State<PositionedTiles> {
-  int count;
   final List<ColorfulTile> _tiles = [];
-
-  PositionedTilesState(this.count) {
-    for (int i = 0; i < count; i++) {
-      _tiles.add(ColorfulTile(key: GlobalKey<_ColorfulTileState>()));
-    }
-  }
 
   Iterable<GlobalKey<_ColorfulTileState>> get _keys =>
       _tiles.map((e) => e.key as GlobalKey<_ColorfulTileState>);
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 0; i < widget.count; i++) {
+      _tiles.add(ColorfulTile(key: GlobalKey<_ColorfulTileState>()));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
