@@ -22,6 +22,7 @@ class _PositionedTilesState extends State<PositionedTiles> {
   ColorfulTile _newTile() {
     return ColorfulTile(
       key: GlobalKey<_ColorfulTileState>(),
+      removeCallback: removeTile,
     );
   }
 
@@ -76,6 +77,12 @@ class _PositionedTilesState extends State<PositionedTiles> {
       k.currentState?.changeColor();
     }
   }
+
+  void removeTile(Key? key) {
+    setState(() {
+      _tiles.removeWhere((e) => e.key == key);
+    });
+  }
 }
 
 class AddingTile extends StatelessWidget {
@@ -105,7 +112,9 @@ class AddingTile extends StatelessWidget {
 }
 
 class ColorfulTile extends StatefulWidget {
-  const ColorfulTile({super.key});
+  final void Function(Key? key) removeCallback;
+
+  const ColorfulTile({super.key, required this.removeCallback});
 
   @override
   State<ColorfulTile> createState() => _ColorfulTileState();
@@ -124,10 +133,20 @@ class _ColorfulTileState extends State<ColorfulTile> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: changeColor,
-      child: Container(
-        color: myColor,
-        height: 140.0,
-        width: 140.0,
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          Container(
+            color: myColor,
+            height: 140.0,
+            width: 140.0,
+          ),
+          IconButton(
+            onPressed: () => widget.removeCallback(widget.key),
+            icon: const Icon(Icons.close),
+            iconSize: 15.0,
+          ),
+        ],
       ),
     );
   }
