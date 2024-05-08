@@ -16,7 +16,7 @@ class PositionedTilesState extends State<PositionedTiles> {
   List<Widget> tiles = [];
 
   PositionedTilesState(this.count) {
-    newTiles();
+    _newTiles();
   }
 
   @override
@@ -30,13 +30,13 @@ class PositionedTilesState extends State<PositionedTiles> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
-            onPressed: () => setState(swapTiles),
+            onPressed: swapTiles,
             tooltip: "Swap tiles",
             child: const Icon(Icons.swap_horiz),
           ),
           const SizedBox(width: 10.0),
           FloatingActionButton(
-            onPressed: () => setState(newTiles),
+            onPressed: newTiles,
             tooltip: "New colors",
             child: const Icon(Icons.refresh),
           ),
@@ -46,11 +46,17 @@ class PositionedTilesState extends State<PositionedTiles> {
   }
 
   void swapTiles() {
-    tiles.insert(0, tiles.removeLast());
+    setState(() {
+      tiles.insert(0, tiles.removeLast());
+    });
+  }
+
+  void _newTiles() {
+    tiles = List.generate(count, (index) => ColorfulTile());
   }
 
   void newTiles() {
-    tiles = List.generate(count, (index) => ColorfulTile());
+    setState(_newTiles);
   }
 }
 
