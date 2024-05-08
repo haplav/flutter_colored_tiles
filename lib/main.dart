@@ -63,7 +63,8 @@ class ColorfulTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: myColor,
-      child: const Padding(padding: EdgeInsets.all(70.0)),
+      height: 140.0,
+      width: 140.0,
     );
   }
 }
