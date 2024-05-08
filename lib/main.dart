@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 void main() => runApp(const MaterialApp(home: PositionedTiles(3)));
 
 class PositionedTiles extends StatefulWidget {
-  final int count;
+  final int defaultCount;
 
-  const PositionedTiles(this.count, {super.key});
+  const PositionedTiles(this.defaultCount, {super.key});
 
   @override
   State<StatefulWidget> createState() => _PositionedTilesState();
@@ -22,7 +22,7 @@ class _PositionedTilesState extends State<PositionedTiles> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < widget.count; i++) {
+    for (int i = 0; i < widget.defaultCount; i++) {
       _tiles.add(ColorfulTile(key: GlobalKey<_ColorfulTileState>()));
     }
   }
