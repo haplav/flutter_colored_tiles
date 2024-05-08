@@ -13,16 +13,16 @@ class PositionedTiles extends StatefulWidget {
 
 class PositionedTilesState extends State<PositionedTiles> {
   int count;
-  final List<GlobalKey<_ColorfulTileState>> _keys = [];
   final List<ColorfulTile> _tiles = [];
 
   PositionedTilesState(this.count) {
-    _keys.addAll(
-        List.generate(count, (index) => GlobalKey<_ColorfulTileState>()));
-    for (var k in _keys) {
-      _tiles.add(ColorfulTile(key: k));
+    for (int i = 0; i < count; i++) {
+      _tiles.add(ColorfulTile(key: GlobalKey<_ColorfulTileState>()));
     }
   }
+
+  Iterable<GlobalKey<_ColorfulTileState>> get _keys =>
+      _tiles.map((e) => e.key as GlobalKey<_ColorfulTileState>);
 
   @override
   Widget build(BuildContext context) {
