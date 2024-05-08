@@ -32,7 +32,7 @@ class _PositionedTilesState extends State<PositionedTiles> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(children: _tiles + [AddingTile(onTap: newTile)]),
+        child: Row(children: _tiles + [AddingTile(onTap: addTile)]),
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
@@ -59,7 +59,7 @@ class _PositionedTilesState extends State<PositionedTiles> {
     });
   }
 
-  void newTile() {
+  void addTile() {
     setState(() {
       var newTile = ColorfulTile(key: GlobalKey<_ColorfulTileState>());
       _tiles.add(newTile);
