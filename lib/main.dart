@@ -13,10 +13,11 @@ class PositionedTiles extends StatefulWidget {
 
 class PositionedTilesState extends State<PositionedTiles> {
   int count;
-  List<ColorfulTile> tiles = [];
+  final List<ColorfulTile> _tiles = [];
 
   PositionedTilesState(this.count) {
-    tiles = List.generate(count, (index) => ColorfulTile(key: UniqueKey()));
+    _tiles.addAll(
+        List.generate(count, (index) => ColorfulTile(key: UniqueKey())));
   }
 
   @override
@@ -24,7 +25,7 @@ class PositionedTilesState extends State<PositionedTiles> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(children: tiles),
+        child: Row(children: _tiles),
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
@@ -47,12 +48,12 @@ class PositionedTilesState extends State<PositionedTiles> {
 
   void swapTiles() {
     setState(() {
-      tiles.insert(0, tiles.removeLast());
+      _tiles.insert(0, _tiles.removeLast());
     });
   }
 
   void _newColors() {
-    for (var tile in tiles) {
+    for (var tile in _tiles) {
       tile.changeColor();
     }
   }
