@@ -16,7 +16,7 @@ class PositionedTilesState extends State<PositionedTiles> {
   List<ColorfulTile> tiles = [];
 
   PositionedTilesState(this.count) {
-    tiles = List.generate(count, (index) => ColorfulTile());
+    tiles = List.generate(count, (index) => ColorfulTile(key: UniqueKey()));
   }
 
   @override
@@ -63,7 +63,7 @@ class PositionedTilesState extends State<PositionedTiles> {
 }
 
 class ColorfulTile extends StatefulWidget {
-  ColorfulTile();
+  ColorfulTile({super.key});
 
   late final VoidCallback changeColor;
 
