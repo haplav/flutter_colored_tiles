@@ -14,7 +14,7 @@ class PositionedTiles extends StatefulWidget {
 }
 
 class _PositionedTilesState extends State<PositionedTiles> {
-  final List<ColorfulTile> _tiles = [];
+  final List<Widget> _tiles = [];
 
   Iterable<GlobalKey<_ColorfulTileState>> get _keys =>
       _tiles.map((e) => e.key as GlobalKey<_ColorfulTileState>);
