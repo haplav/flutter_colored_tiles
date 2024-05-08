@@ -10,10 +10,10 @@ class PositionedTiles extends StatefulWidget {
   const PositionedTiles(this.count, {super.key});
 
   @override
-  State<StatefulWidget> createState() => PositionedTilesState();
+  State<StatefulWidget> createState() => _PositionedTilesState();
 }
 
-class PositionedTilesState extends State<PositionedTiles> {
+class _PositionedTilesState extends State<PositionedTiles> {
   final List<ColorfulTile> _tiles = [];
 
   Iterable<GlobalKey<_ColorfulTileState>> get _keys =>
