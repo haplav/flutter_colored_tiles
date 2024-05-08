@@ -60,10 +60,19 @@ class PositionedTilesState extends State<PositionedTiles> {
   }
 }
 
-class ColorfulTile extends StatelessWidget {
-  final Color myColor;
+class ColorfulTile extends StatefulWidget {
+  @override
+  State<ColorfulTile> createState() => _ColorfulTileState();
+}
 
-  ColorfulTile() : myColor = UniqueColorGenerator.getColor();
+class _ColorfulTileState extends State<ColorfulTile> {
+  late Color myColor;
+
+  @override
+  void initState() {
+    super.initState();
+    myColor = UniqueColorGenerator.getColor();
+  }
 
   @override
   Widget build(BuildContext context) {
