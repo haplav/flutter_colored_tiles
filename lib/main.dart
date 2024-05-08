@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 void main() => runApp(const MaterialApp(home: PositionedTiles()));
 
 class PositionedTiles extends StatefulWidget {
-  const PositionedTiles();
+  const PositionedTiles({super.key});
 
   @override
   State<StatefulWidget> createState() => PositionedTilesState(3);
