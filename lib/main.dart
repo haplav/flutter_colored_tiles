@@ -19,11 +19,17 @@ class _PositionedTilesState extends State<PositionedTiles> {
   Iterable<GlobalKey<_ColorfulTileState>> get _keys =>
       _tiles.map((e) => e.key as GlobalKey<_ColorfulTileState>);
 
+  ColorfulTile _newTile() {
+    return ColorfulTile(
+      key: GlobalKey<_ColorfulTileState>(),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     for (int i = 0; i < widget.defaultCount; i++) {
-      _tiles.add(ColorfulTile(key: GlobalKey<_ColorfulTileState>()));
+      _tiles.add(_newTile());
     }
   }
 
@@ -61,8 +67,7 @@ class _PositionedTilesState extends State<PositionedTiles> {
 
   void addTile() {
     setState(() {
-      var newTile = ColorfulTile(key: GlobalKey<_ColorfulTileState>());
-      _tiles.add(newTile);
+      _tiles.add(_newTile());
     });
   }
 
