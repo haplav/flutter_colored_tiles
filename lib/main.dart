@@ -13,10 +13,10 @@ class PositionedTiles extends StatefulWidget {
 
 class PositionedTilesState extends State<PositionedTiles> {
   int count;
-  List<Widget> tiles = [];
+  List<ColorfulTile> tiles = [];
 
   PositionedTilesState(this.count) {
-    _newTiles();
+    tiles = List.generate(count, (index) => ColorfulTile());
   }
 
   @override
@@ -36,7 +36,7 @@ class PositionedTilesState extends State<PositionedTiles> {
           ),
           const SizedBox(width: 10.0),
           FloatingActionButton(
-            onPressed: newTiles,
+            onPressed: newColors,
             tooltip: "New colors",
             child: const Icon(Icons.refresh),
           ),
@@ -51,27 +51,34 @@ class PositionedTilesState extends State<PositionedTiles> {
     });
   }
 
-  void _newTiles() {
-    tiles = List.generate(count, (index) => ColorfulTile());
+  void _newColors() {
+    for (var tile in tiles) {
+      tile.changeColor();
+    }
   }
 
-  void newTiles() {
-    setState(_newTiles);
+  void newColors() {
+    setState(_newColors);
   }
 }
 
 class ColorfulTile extends StatefulWidget {
+  ColorfulTile();
+
+  late final VoidCallback changeColor;
+
   @override
   State<ColorfulTile> createState() => _ColorfulTileState();
 }
 
 class _ColorfulTileState extends State<ColorfulTile> {
-  late Color myColor;
+  Color myColor = Colors.grey;
 
   @override
   void initState() {
     super.initState();
-    myColor = UniqueColorGenerator.getColor();
+    changeColor();
+    widget.changeColor = changeColor;
   }
 
   @override
@@ -81,6 +88,12 @@ class _ColorfulTileState extends State<ColorfulTile> {
       height: 140.0,
       width: 140.0,
     );
+  }
+
+  void changeColor() {
+    setState(() {
+      myColor = UniqueColorGenerator.getColor();
+    });
   }
 }
 
