@@ -32,7 +32,7 @@ class _PositionedTilesState extends State<PositionedTiles> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(children: _tiles),
+        child: Row(children: _tiles + [AddingTile(onTap: newTile)]),
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
@@ -59,10 +59,43 @@ class _PositionedTilesState extends State<PositionedTiles> {
     });
   }
 
+  void newTile() {
+    setState(() {
+      var newTile = ColorfulTile(key: GlobalKey<_ColorfulTileState>());
+      _tiles.add(newTile);
+    });
+  }
+
   void newColors() {
     for (var k in _keys) {
       k.currentState?.changeColor();
     }
+  }
+}
+
+class AddingTile extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const AddingTile({super.key, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+            width: 1.0,
+          ),
+        ),
+        child: const SizedBox(
+          height: 140.0,
+          width: 140.0,
+          child: Icon(Icons.add),
+        ),
+      ),
+    );
   }
 }
 
