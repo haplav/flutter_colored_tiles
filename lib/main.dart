@@ -13,11 +13,15 @@ class PositionedTiles extends StatefulWidget {
 
 class PositionedTilesState extends State<PositionedTiles> {
   int count;
+  final List<GlobalKey<_ColorfulTileState>> _keys = [];
   final List<ColorfulTile> _tiles = [];
 
   PositionedTilesState(this.count) {
-    _tiles.addAll(
-        List.generate(count, (index) => ColorfulTile(key: UniqueKey())));
+    _keys.addAll(
+        List.generate(count, (index) => GlobalKey<_ColorfulTileState>()));
+    for (var k in _keys) {
+      _tiles.add(ColorfulTile(key: k));
+    }
   }
 
   @override
@@ -52,21 +56,15 @@ class PositionedTilesState extends State<PositionedTiles> {
     });
   }
 
-  void _newColors() {
-    for (var tile in _tiles) {
-      tile.changeColor();
-    }
-  }
-
   void newColors() {
-    setState(_newColors);
+    for (var k in _keys) {
+      k.currentState?.changeColor();
+    }
   }
 }
 
 class ColorfulTile extends StatefulWidget {
-  ColorfulTile({super.key});
-
-  late final VoidCallback changeColor;
+  const ColorfulTile({super.key});
 
   @override
   State<ColorfulTile> createState() => _ColorfulTileState();
@@ -79,7 +77,6 @@ class _ColorfulTileState extends State<ColorfulTile> {
   void initState() {
     super.initState();
     changeColor();
-    widget.changeColor = changeColor;
   }
 
   @override
