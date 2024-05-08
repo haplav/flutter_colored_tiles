@@ -84,10 +84,13 @@ class _ColorfulTileState extends State<ColorfulTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: myColor,
-      height: 140.0,
-      width: 140.0,
+    return GestureDetector(
+      onTap: changeColor,
+      child: Container(
+        color: myColor,
+        height: 140.0,
+        width: 140.0,
+      ),
     );
   }
 
