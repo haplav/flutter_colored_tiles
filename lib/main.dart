@@ -45,9 +45,15 @@ class _PositionedTilesState extends State<PositionedTiles> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
-            onPressed: swapTiles,
-            tooltip: "Swap tiles",
-            child: const Icon(Icons.swap_horiz),
+            onPressed: backward,
+            tooltip: "Rotate backward",
+            child: const Icon(Icons.skip_previous),
+          ),
+          const SizedBox(width: 10.0),
+          FloatingActionButton(
+            onPressed: forward,
+            tooltip: "Rotate forward",
+            child: const Icon(Icons.skip_next),
           ),
           const SizedBox(width: 10.0),
           FloatingActionButton(
@@ -60,7 +66,13 @@ class _PositionedTilesState extends State<PositionedTiles> {
     );
   }
 
-  void swapTiles() {
+  void backward() {
+    setState(() {
+      _tiles.add(_tiles.removeAt(0));
+    });
+  }
+
+  void forward() {
     setState(() {
       _tiles.insert(0, _tiles.removeLast());
     });
