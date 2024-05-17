@@ -1,41 +1,26 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(const MaterialApp(home: PositionedTiles(3)));
+void main() => runApp(ChangeNotifierProvider(
+      create: (context) => PositionedTilesState(3),
+      child: const MaterialApp(
+        home: PositionedTiles(),
+      ),
+    ));
 
-class PositionedTiles extends StatefulWidget {
-  final int defaultCount;
-
-  const PositionedTiles(this.defaultCount, {super.key});
-
-  @override
-  State<StatefulWidget> createState() => _PositionedTilesState();
-}
-
-class _PositionedTilesState extends State<PositionedTiles> {
-  final List<ColorfulTileData> _tileDataList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    for (int i = 0; i < widget.defaultCount; i++) {
-      _tileDataList.add(ColorfulTileData());
-    }
-  }
+class PositionedTiles extends StatelessWidget {
+  const PositionedTiles({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> tiles = _tileDataList
-        .map((data) => ColorfulTile(
-              data: data,
-              changeColorCallback: changeTileColor,
-              moveLeftCallback: moveTileLeft,
-              moveRightCallback: moveTileRight,
-              removeCallback: removeTile,
-            ) as Widget)
+    final state = context.watch<PositionedTilesState>();
+
+    List<Widget> tiles = state.tileDataList
+        .map((data) => ColorfulTile(data: data) as Widget)
         .toList();
-    tiles.add(AddingTile(onTap: addTile));
+    tiles.add(AddingTile(onTap: state.addTile));
 
     return Scaffold(
       body: Padding(
@@ -46,19 +31,19 @@ class _PositionedTilesState extends State<PositionedTiles> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
-            onPressed: backward,
+            onPressed: state.backward,
             tooltip: "Rotate left",
             child: const Icon(Icons.keyboard_double_arrow_left),
           ),
           const SizedBox(width: 10.0),
           FloatingActionButton(
-            onPressed: forward,
+            onPressed: state.forward,
             tooltip: "Rotate right",
             child: const Icon(Icons.keyboard_double_arrow_right),
           ),
           const SizedBox(width: 10.0),
           FloatingActionButton(
-            onPressed: newColors,
+            onPressed: state.newColors,
             tooltip: "New colors",
             child: const Icon(Icons.refresh),
           ),
@@ -66,61 +51,66 @@ class _PositionedTilesState extends State<PositionedTiles> {
       ),
     );
   }
+}
+
+class PositionedTilesState extends ChangeNotifier {
+  final List<ColorfulTileData> _tileDataList = [];
+
+  List<ColorfulTileData> get tileDataList => _tileDataList;
+  int get count => _tileDataList.length;
+
+  PositionedTilesState(int defaultCount) {
+    for (int i = 0; i < defaultCount; i++) {
+      _tileDataList.add(ColorfulTileData());
+    }
+  }
 
   void backward() {
-    setState(() {
-      _tileDataList.add(_tileDataList.removeAt(0));
-    });
+    _tileDataList.add(_tileDataList.removeAt(0));
+    notifyListeners();
   }
 
   void forward() {
-    setState(() {
-      _tileDataList.insert(0, _tileDataList.removeLast());
-    });
+    _tileDataList.insert(0, _tileDataList.removeLast());
+    notifyListeners();
   }
 
   void addTile() {
-    setState(() {
-      _tileDataList.add(ColorfulTileData());
-    });
+    _tileDataList.add(ColorfulTileData());
+    notifyListeners();
   }
 
   void newColors() {
-    setState(() {
-      for (var data in _tileDataList) {
-        data.color = UniqueColorGenerator.getColor();
-      }
-    });
+    for (var data in _tileDataList) {
+      data.color = UniqueColorGenerator.getColor();
+    }
+    notifyListeners();
   }
 
   void changeTileColor(ColorfulTileData data) {
-    setState(() {
-      data.color = UniqueColorGenerator.getColor();
-    });
+    data.color = UniqueColorGenerator.getColor();
+    notifyListeners();
   }
 
   void moveTileLeft(ColorfulTileData data) {
-    setState(() {
-      int origPosition = _tileDataList.indexOf(data);
-      int newPosition = (origPosition - 1) % _tileDataList.length;
-      _tileDataList.removeAt(origPosition);
-      _tileDataList.insert(newPosition, data);
-    });
+    int origPosition = _tileDataList.indexOf(data);
+    int newPosition = (origPosition - 1) % _tileDataList.length;
+    _tileDataList.removeAt(origPosition);
+    _tileDataList.insert(newPosition, data);
+    notifyListeners();
   }
 
   void moveTileRight(ColorfulTileData data) {
-    setState(() {
-      int origPosition = _tileDataList.indexOf(data);
-      int newPosition = (origPosition + 1) % _tileDataList.length;
-      _tileDataList.removeAt(origPosition);
-      _tileDataList.insert(newPosition, data);
-    });
+    int origPosition = _tileDataList.indexOf(data);
+    int newPosition = (origPosition + 1) % _tileDataList.length;
+    _tileDataList.removeAt(origPosition);
+    _tileDataList.insert(newPosition, data);
+    notifyListeners();
   }
 
   void removeTile(ColorfulTileData data) {
-    setState(() {
-      _tileDataList.remove(data);
-    });
+    _tileDataList.remove(data);
+    notifyListeners();
   }
 }
 
@@ -160,27 +150,20 @@ Color getContrastingColor(Color color) {
 
 class ColorfulTile extends StatelessWidget {
   final ColorfulTileData data;
-  final void Function(ColorfulTileData data) changeColorCallback;
-  final void Function(ColorfulTileData data) moveLeftCallback;
-  final void Function(ColorfulTileData data) moveRightCallback;
-  final void Function(ColorfulTileData data) removeCallback;
 
   const ColorfulTile({
     super.key,
     required this.data,
-    required this.changeColorCallback,
-    required this.moveLeftCallback,
-    required this.moveRightCallback,
-    required this.removeCallback,
   });
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<PositionedTilesState>();
     final iconColor = getContrastingColor(data.color);
     return Stack(
       children: [
         GestureDetector(
-          onTap: () => changeColorCallback(data),
+          onTap: () => state.changeTileColor(data),
           child: Tooltip(
             message: "Change tile color",
             child: Container(
@@ -194,7 +177,7 @@ class ColorfulTile extends StatelessWidget {
           top: 0.0,
           right: 0.0,
           child: IconButton(
-            onPressed: () => removeCallback(data),
+            onPressed: () => state.removeTile(data),
             icon: const Icon(Icons.close),
             iconSize: 15.0,
             color: iconColor,
@@ -205,7 +188,7 @@ class ColorfulTile extends StatelessWidget {
           bottom: 0.0,
           left: 0.0,
           child: IconButton(
-            onPressed: () => moveLeftCallback(data),
+            onPressed: () => state.moveTileLeft(data),
             icon: const Icon(Icons.keyboard_arrow_left),
             iconSize: 18.0,
             color: iconColor,
@@ -216,7 +199,7 @@ class ColorfulTile extends StatelessWidget {
           bottom: 0.0,
           right: 0.0,
           child: IconButton(
-            onPressed: () => moveRightCallback(data),
+            onPressed: () => state.moveTileRight(data),
             icon: const Icon(Icons.keyboard_arrow_right),
             iconSize: 18.0,
             color: iconColor,
