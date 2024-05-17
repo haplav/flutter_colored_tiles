@@ -144,23 +144,23 @@ class ColorfulTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => changeColorCallback(data),
-      child: Stack(
-        alignment: Alignment.topRight,
-        children: [
-          Container(
+    return Stack(
+      alignment: Alignment.topRight,
+      children: [
+        GestureDetector(
+          onTap: () => changeColorCallback(data),
+          child: Container(
             color: data.color,
             height: 140.0,
             width: 140.0,
           ),
-          IconButton(
-            onPressed: () => removeCallback(data),
-            icon: const Icon(Icons.close),
-            iconSize: 15.0,
-          ),
-        ],
-      ),
+        ),
+        IconButton(
+          onPressed: () => removeCallback(data),
+          icon: const Icon(Icons.close),
+          iconSize: 15.0,
+        ),
+      ],
     );
   }
 }
