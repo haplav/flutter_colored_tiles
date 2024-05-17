@@ -17,9 +17,8 @@ class PositionedTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<PositionedTilesState>();
 
-    List<Widget> tiles = state.tileDataList
-        .map((data) => ColorfulTile(data: data) as Widget)
-        .toList();
+    List<Widget> tiles =
+        state.tileDataList.map((data) => ColorfulTile(data) as Widget).toList();
     tiles.add(AddingTile(onTap: state.addTile));
 
     return Scaffold(
@@ -151,9 +150,9 @@ Color getContrastingColor(Color color) {
 class ColorfulTile extends StatelessWidget {
   final ColorfulTileData data;
 
-  const ColorfulTile({
+  const ColorfulTile(
+    this.data, {
     super.key,
-    required this.data,
   });
 
   @override
