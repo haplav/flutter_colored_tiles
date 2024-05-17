@@ -14,15 +14,11 @@ class PositionedTiles extends StatefulWidget {
 }
 
 class _PositionedTilesState extends State<PositionedTiles> {
-  final List<ColorfulTile> _colorfulTiles = [];
+  final List<ColorfulTileData> _tileDataList = [];
 
-  Iterable<GlobalKey<_ColorfulTileState>> get _keys =>
-      _colorfulTiles.map((e) => e.key as GlobalKey<_ColorfulTileState>);
-
-  ColorfulTile _newTile() {
-    return ColorfulTile(
-      key: GlobalKey<_ColorfulTileState>(),
-      removeCallback: removeTile,
+  ColorfulTileData _newTileData() {
+    return ColorfulTileData(
+      color: UniqueColorGenerator.getColor(),
     );
   }
 
@@ -30,13 +26,21 @@ class _PositionedTilesState extends State<PositionedTiles> {
   void initState() {
     super.initState();
     for (int i = 0; i < widget.defaultCount; i++) {
-      _colorfulTiles.add(_newTile());
+      _tileDataList.add(_newTileData());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var tiles = (_colorfulTiles as List<Widget>) + [AddingTile(onTap: addTile)];
+    List<Widget> tiles = _tileDataList
+        .map((data) => ColorfulTile(
+              data: data,
+              changeColorCallback: changeTileColor,
+              removeCallback: removeTile,
+            ) as Widget)
+        .toList();
+    tiles.add(AddingTile(onTap: addTile));
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -69,31 +73,39 @@ class _PositionedTilesState extends State<PositionedTiles> {
 
   void backward() {
     setState(() {
-      _colorfulTiles.add(_colorfulTiles.removeAt(0));
+      _tileDataList.add(_tileDataList.removeAt(0));
     });
   }
 
   void forward() {
     setState(() {
-      _colorfulTiles.insert(0, _colorfulTiles.removeLast());
+      _tileDataList.insert(0, _tileDataList.removeLast());
     });
   }
 
   void addTile() {
     setState(() {
-      _colorfulTiles.add(_newTile());
+      _tileDataList.add(_newTileData());
     });
   }
 
   void newColors() {
-    for (var k in _keys) {
-      k.currentState?.changeColor();
-    }
+    setState(() {
+      for (var data in _tileDataList) {
+        data.color = UniqueColorGenerator.getColor();
+      }
+    });
   }
 
-  void removeTile(Key? key) {
+  void changeTileColor(ColorfulTileData data) {
     setState(() {
-      _colorfulTiles.removeWhere((e) => e.key == key);
+      data.color = UniqueColorGenerator.getColor();
+    });
+  }
+
+  void removeTile(ColorfulTileData data) {
+    setState(() {
+      _tileDataList.remove(data);
     });
   }
 }
@@ -124,38 +136,32 @@ class AddingTile extends StatelessWidget {
   }
 }
 
-class ColorfulTile extends StatefulWidget {
-  final void Function(Key? key) removeCallback;
+class ColorfulTile extends StatelessWidget {
+  final ColorfulTileData data;
+  final void Function(ColorfulTileData data) changeColorCallback;
+  final void Function(ColorfulTileData data) removeCallback;
 
-  const ColorfulTile({super.key, required this.removeCallback});
-
-  @override
-  State<ColorfulTile> createState() => _ColorfulTileState();
-}
-
-class _ColorfulTileState extends State<ColorfulTile> {
-  Color myColor = Colors.grey;
-
-  @override
-  void initState() {
-    super.initState();
-    changeColor();
-  }
+  const ColorfulTile({
+    super.key,
+    required this.data,
+    required this.changeColorCallback,
+    required this.removeCallback,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: changeColor,
+      onTap: () => changeColorCallback(data),
       child: Stack(
         alignment: Alignment.topRight,
         children: [
           Container(
-            color: myColor,
+            color: data.color,
             height: 140.0,
             width: 140.0,
           ),
           IconButton(
-            onPressed: () => widget.removeCallback(widget.key),
+            onPressed: () => removeCallback(data),
             icon: const Icon(Icons.close),
             iconSize: 15.0,
           ),
@@ -163,12 +169,12 @@ class _ColorfulTileState extends State<ColorfulTile> {
       ),
     );
   }
+}
 
-  void changeColor() {
-    setState(() {
-      myColor = UniqueColorGenerator.getColor();
-    });
-  }
+class ColorfulTileData {
+  Color color;
+
+  ColorfulTileData({required this.color});
 }
 
 class UniqueColorGenerator {
