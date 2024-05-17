@@ -14,10 +14,10 @@ class PositionedTiles extends StatefulWidget {
 }
 
 class _PositionedTilesState extends State<PositionedTiles> {
-  final List<Widget> _tiles = [];
+  final List<ColorfulTile> _colorfulTiles = [];
 
   Iterable<GlobalKey<_ColorfulTileState>> get _keys =>
-      _tiles.map((e) => e.key as GlobalKey<_ColorfulTileState>);
+      _colorfulTiles.map((e) => e.key as GlobalKey<_ColorfulTileState>);
 
   ColorfulTile _newTile() {
     return ColorfulTile(
@@ -30,16 +30,17 @@ class _PositionedTilesState extends State<PositionedTiles> {
   void initState() {
     super.initState();
     for (int i = 0; i < widget.defaultCount; i++) {
-      _tiles.add(_newTile());
+      _colorfulTiles.add(_newTile());
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    var tiles = (_colorfulTiles as List<Widget>) + [AddingTile(onTap: addTile)];
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(children: _tiles + [AddingTile(onTap: addTile)]),
+        child: Row(children: tiles),
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
@@ -68,19 +69,19 @@ class _PositionedTilesState extends State<PositionedTiles> {
 
   void backward() {
     setState(() {
-      _tiles.add(_tiles.removeAt(0));
+      _colorfulTiles.add(_colorfulTiles.removeAt(0));
     });
   }
 
   void forward() {
     setState(() {
-      _tiles.insert(0, _tiles.removeLast());
+      _colorfulTiles.insert(0, _colorfulTiles.removeLast());
     });
   }
 
   void addTile() {
     setState(() {
-      _tiles.add(_newTile());
+      _colorfulTiles.add(_newTile());
     });
   }
 
@@ -92,7 +93,7 @@ class _PositionedTilesState extends State<PositionedTiles> {
 
   void removeTile(Key? key) {
     setState(() {
-      _tiles.removeWhere((e) => e.key == key);
+      _colorfulTiles.removeWhere((e) => e.key == key);
     });
   }
 }
