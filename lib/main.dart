@@ -45,14 +45,14 @@ class _PositionedTilesState extends State<PositionedTiles> {
         children: [
           FloatingActionButton(
             onPressed: backward,
-            tooltip: "Rotate backward",
-            child: const Icon(Icons.skip_previous),
+            tooltip: "Rotate left",
+            child: const Icon(Icons.keyboard_double_arrow_left),
           ),
           const SizedBox(width: 10.0),
           FloatingActionButton(
             onPressed: forward,
-            tooltip: "Rotate forward",
-            child: const Icon(Icons.skip_next),
+            tooltip: "Rotate right",
+            child: const Icon(Icons.keyboard_double_arrow_right),
           ),
           const SizedBox(width: 10.0),
           FloatingActionButton(
