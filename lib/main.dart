@@ -113,17 +113,20 @@ class AddingTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.black,
-            width: 1.0,
+      child: Tooltip(
+        message: "Add a new tile",
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.black,
+              width: 1.0,
+            ),
           ),
-        ),
-        child: const SizedBox(
-          height: 140.0,
-          width: 140.0,
-          child: Icon(Icons.add),
+          child: const SizedBox(
+            height: 140.0,
+            width: 140.0,
+            child: Icon(Icons.add),
+          ),
         ),
       ),
     );
@@ -154,10 +157,13 @@ class ColorfulTile extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () => changeColorCallback(data),
-          child: Container(
-            color: data.color,
-            height: 140.0,
-            width: 140.0,
+          child: Tooltip(
+            message: "Change tile color",
+            child: Container(
+              color: data.color,
+              height: 140.0,
+              width: 140.0,
+            ),
           ),
         ),
         IconButton(
@@ -165,6 +171,7 @@ class ColorfulTile extends StatelessWidget {
           icon: const Icon(Icons.close),
           iconSize: 15.0,
           color: getContrastingColor(data.color),
+          tooltip: "Remove tile",
         ),
       ],
     );
