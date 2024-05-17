@@ -30,6 +30,8 @@ class _PositionedTilesState extends State<PositionedTiles> {
         .map((data) => ColorfulTile(
               data: data,
               changeColorCallback: changeTileColor,
+              moveLeftCallback: moveTileLeft,
+              moveRightCallback: moveTileRight,
               removeCallback: removeTile,
             ) as Widget)
         .toList();
@@ -97,6 +99,24 @@ class _PositionedTilesState extends State<PositionedTiles> {
     });
   }
 
+  void moveTileLeft(ColorfulTileData data) {
+    setState(() {
+      int origPosition = _tileDataList.indexOf(data);
+      int newPosition = (origPosition - 1) % _tileDataList.length;
+      _tileDataList.removeAt(origPosition);
+      _tileDataList.insert(newPosition, data);
+    });
+  }
+
+  void moveTileRight(ColorfulTileData data) {
+    setState(() {
+      int origPosition = _tileDataList.indexOf(data);
+      int newPosition = (origPosition + 1) % _tileDataList.length;
+      _tileDataList.removeAt(origPosition);
+      _tileDataList.insert(newPosition, data);
+    });
+  }
+
   void removeTile(ColorfulTileData data) {
     setState(() {
       _tileDataList.remove(data);
@@ -141,19 +161,23 @@ Color getContrastingColor(Color color) {
 class ColorfulTile extends StatelessWidget {
   final ColorfulTileData data;
   final void Function(ColorfulTileData data) changeColorCallback;
+  final void Function(ColorfulTileData data) moveLeftCallback;
+  final void Function(ColorfulTileData data) moveRightCallback;
   final void Function(ColorfulTileData data) removeCallback;
 
   const ColorfulTile({
     super.key,
     required this.data,
     required this.changeColorCallback,
+    required this.moveLeftCallback,
+    required this.moveRightCallback,
     required this.removeCallback,
   });
 
   @override
   Widget build(BuildContext context) {
+    final iconColor = getContrastingColor(data.color);
     return Stack(
-      alignment: Alignment.topRight,
       children: [
         GestureDetector(
           onTap: () => changeColorCallback(data),
@@ -166,12 +190,38 @@ class ColorfulTile extends StatelessWidget {
             ),
           ),
         ),
-        IconButton(
-          onPressed: () => removeCallback(data),
-          icon: const Icon(Icons.close),
-          iconSize: 15.0,
-          color: getContrastingColor(data.color),
-          tooltip: "Remove tile",
+        Positioned(
+          top: 0.0,
+          right: 0.0,
+          child: IconButton(
+            onPressed: () => removeCallback(data),
+            icon: const Icon(Icons.close),
+            iconSize: 15.0,
+            color: iconColor,
+            tooltip: "Remove tile",
+          ),
+        ),
+        Positioned(
+          bottom: 0.0,
+          left: 0.0,
+          child: IconButton(
+            onPressed: () => moveLeftCallback(data),
+            icon: const Icon(Icons.keyboard_arrow_left),
+            iconSize: 18.0,
+            color: iconColor,
+            tooltip: "Move tile left",
+          ),
+        ),
+        Positioned(
+          bottom: 0.0,
+          right: 0.0,
+          child: IconButton(
+            onPressed: () => moveRightCallback(data),
+            icon: const Icon(Icons.keyboard_arrow_right),
+            iconSize: 18.0,
+            color: iconColor,
+            tooltip: "Move tile right",
+          ),
         ),
       ],
     );
