@@ -130,6 +130,11 @@ class AddingTile extends StatelessWidget {
   }
 }
 
+Color getContrastingColor(Color color) {
+  Brightness brightness = ThemeData.estimateBrightnessForColor(color);
+  return brightness == Brightness.light ? Colors.black : Colors.white;
+}
+
 class ColorfulTile extends StatelessWidget {
   final ColorfulTileData data;
   final void Function(ColorfulTileData data) changeColorCallback;
@@ -159,6 +164,7 @@ class ColorfulTile extends StatelessWidget {
           onPressed: () => removeCallback(data),
           icon: const Icon(Icons.close),
           iconSize: 15.0,
+          color: getContrastingColor(data.color),
         ),
       ],
     );
