@@ -16,17 +16,11 @@ class PositionedTiles extends StatefulWidget {
 class _PositionedTilesState extends State<PositionedTiles> {
   final List<ColorfulTileData> _tileDataList = [];
 
-  ColorfulTileData _newTileData() {
-    return ColorfulTileData(
-      color: UniqueColorGenerator.getColor(),
-    );
-  }
-
   @override
   void initState() {
     super.initState();
     for (int i = 0; i < widget.defaultCount; i++) {
-      _tileDataList.add(_newTileData());
+      _tileDataList.add(ColorfulTileData());
     }
   }
 
@@ -85,7 +79,7 @@ class _PositionedTilesState extends State<PositionedTiles> {
 
   void addTile() {
     setState(() {
-      _tileDataList.add(_newTileData());
+      _tileDataList.add(ColorfulTileData());
     });
   }
 
@@ -174,7 +168,8 @@ class ColorfulTile extends StatelessWidget {
 class ColorfulTileData {
   Color color;
 
-  ColorfulTileData({required this.color});
+  ColorfulTileData({Color? color})
+      : color = color ?? UniqueColorGenerator.getColor();
 }
 
 class UniqueColorGenerator {
