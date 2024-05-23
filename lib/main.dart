@@ -37,13 +37,13 @@ class FloatingButtons extends StatelessWidget {
       children: [
         FloatingActionButton(
           onPressed: state.backward,
-          tooltip: "Rotate left",
+          tooltip: "Shift left",
           child: const Icon(Icons.keyboard_double_arrow_left),
         ),
         const SizedBox(width: 10.0),
         FloatingActionButton(
           onPressed: state.forward,
-          tooltip: "Rotate right",
+          tooltip: "Shift right",
           child: const Icon(Icons.keyboard_double_arrow_right),
         ),
         const SizedBox(width: 10.0),
