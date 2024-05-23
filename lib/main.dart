@@ -187,15 +187,20 @@ class ColorfulTile extends StatelessWidget {
     final iconColor = getContrastingColor(data.color);
     return Stack(
       children: [
-        GestureDetector(
-          onTap: () => state.changeTileColor(data),
-          child: Tooltip(
-            message: "Change tile color",
-            child: Container(
-              color: data.color,
-              height: 140.0,
-              width: 140.0,
-            ),
+        Container(
+          color: data.color,
+          height: 140.0,
+          width: 140.0,
+        ),
+        Positioned(
+          top: 0.0,
+          left: 0.0,
+          child: IconButton(
+            onPressed: () => state.changeTileColor(data),
+            icon: const Icon(Icons.refresh),
+            iconSize: 15.0,
+            color: iconColor,
+            tooltip: "Change tile color",
           ),
         ),
         Positioned(
