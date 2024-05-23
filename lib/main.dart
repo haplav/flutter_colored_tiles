@@ -13,8 +13,43 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => PositionedTilesState(3),
       child: const MaterialApp(
-        home: PositionedTiles(),
+        home: Scaffold(
+          body: PositionedTiles(),
+          floatingActionButton: FloatingButtons(),
+        ),
       ),
+    );
+  }
+}
+
+class FloatingButtons extends StatelessWidget {
+  const FloatingButtons({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<PositionedTilesState>();
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        FloatingActionButton(
+          onPressed: state.backward,
+          tooltip: "Rotate left",
+          child: const Icon(Icons.keyboard_double_arrow_left),
+        ),
+        const SizedBox(width: 10.0),
+        FloatingActionButton(
+          onPressed: state.forward,
+          tooltip: "Rotate right",
+          child: const Icon(Icons.keyboard_double_arrow_right),
+        ),
+        const SizedBox(width: 10.0),
+        FloatingActionButton(
+          onPressed: state.newColors,
+          tooltip: "New colors",
+          child: const Icon(Icons.refresh),
+        ),
+      ],
     );
   }
 }
@@ -30,35 +65,11 @@ class PositionedTiles extends StatelessWidget {
         state.tileDataList.map((data) => ColorfulTile(data) as Widget).toList();
     tiles.add(AddingTile(onTap: state.addTile));
 
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(children: tiles),
-        ),
-      ),
-      floatingActionButton: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            onPressed: state.backward,
-            tooltip: "Rotate left",
-            child: const Icon(Icons.keyboard_double_arrow_left),
-          ),
-          const SizedBox(width: 10.0),
-          FloatingActionButton(
-            onPressed: state.forward,
-            tooltip: "Rotate right",
-            child: const Icon(Icons.keyboard_double_arrow_right),
-          ),
-          const SizedBox(width: 10.0),
-          FloatingActionButton(
-            onPressed: state.newColors,
-            tooltip: "New colors",
-            child: const Icon(Icons.refresh),
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(children: tiles),
       ),
     );
   }
