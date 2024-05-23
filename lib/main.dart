@@ -259,7 +259,13 @@ class ColorfulTile extends StatelessWidget {
       height: 140.0,
       width: 140.0,
       child: Stack(
-        children: _buttons,
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Text(data.id.toString()),
+          ),
+          ..._buttons
+        ],
       ),
     );
   }
