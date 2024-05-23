@@ -33,7 +33,10 @@ class PositionedTiles extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(children: tiles),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(children: tiles),
+        ),
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
