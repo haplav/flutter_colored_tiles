@@ -173,35 +173,32 @@ Color getContrastingColor(Color color) {
   return brightness == Brightness.light ? Colors.black : Colors.white;
 }
 
-typedef AlignedIconConfig = ({
-  AlignmentGeometry alignment,
-  String description,
-  IconData icon,
-  Function(PositionedTilesState, ColorfulTileData) onTap,
-});
-
 class AlignedIconButton extends StatelessWidget {
-  final AlignedIconConfig cfg;
+  final AlignmentGeometry alignment;
   final Color color;
-  final ColorfulTileData data;
+  final String description;
+  final IconData icon;
+  final void Function(PositionedTilesState) onTap;
 
-  const AlignedIconButton(
-    this.cfg, {
+  const AlignedIconButton({
     super.key,
+    required this.alignment,
     required this.color,
-    required this.data,
+    required this.description,
+    required this.icon,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<PositionedTilesState>();
     return Align(
-        alignment: cfg.alignment,
+        alignment: alignment,
         child: IconButton(
-          icon: Icon(cfg.icon, color: color),
+          icon: Icon(icon, color: color),
           iconSize: 15.0,
-          onPressed: () => cfg.onTap(state, data),
-          tooltip: cfg.description,
+          onPressed: () => onTap(state),
+          tooltip: description,
         ));
   }
 }
@@ -215,42 +212,38 @@ class ColorfulTile extends StatelessWidget {
   )   : iconColor = getContrastingColor(data.color),
         super(key: ValueKey(data.id));
 
-  static List<AlignedIconConfig> get controls {
-    return [
-      (
+  List<AlignedIconButton> get _buttons {
+    return List<AlignedIconButton>.unmodifiable([
+      AlignedIconButton(
         alignment: Alignment.topLeft,
+        color: iconColor,
         description: "Change tile color",
         icon: Icons.refresh,
-        onTap: (state, data) => state.changeTileColor(data),
+        onTap: (state) => state.changeTileColor(data),
       ),
-      (
+      AlignedIconButton(
         alignment: Alignment.topRight,
+        color: iconColor,
         description: "Remove tile",
         icon: Icons.close,
-        onTap: (state, data) => state.removeTile(data),
+        onTap: (state) => state.removeTile(data),
       ),
-      (
+      AlignedIconButton(
         alignment: Alignment.bottomLeft,
+        color: iconColor,
         description: "Move tile left",
         icon: Icons.chevron_left,
-        onTap: (state, data) => state.moveTileLeft(data),
+        onTap: (state) => state.moveTileLeft(data),
       ),
-      (
+      AlignedIconButton(
         alignment: Alignment.bottomRight,
+        color: iconColor,
         description: "Move tile right",
         icon: Icons.chevron_right,
-        onTap: (state, data) => state.moveTileRight(data),
+        onTap: (state) => state.moveTileRight(data),
       ),
-    ];
+    ]);
   }
-
-  List<AlignedIconButton> get _buttons => controls
-      .map((e) => AlignedIconButton(
-            e,
-            color: iconColor,
-            data: data,
-          ))
-      .toList();
 
   @override
   Widget build(BuildContext context) {
