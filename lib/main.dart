@@ -221,7 +221,15 @@ class ColorfulTile extends StatefulWidget {
 }
 
 class _ColorfulTileState extends State<ColorfulTile> {
-  bool controlsVisible = false;
+  bool _controlsVisible = false;
+  bool _onExitActive = true;
+  bool _inside = false;
+
+  @override
+  void initState() {
+    super.initState();
+    delayedHideControls();
+  }
 
   List<AlignedIconButton> get _buttons {
     return List<AlignedIconButton>.unmodifiable([
@@ -246,7 +254,8 @@ class _ColorfulTileState extends State<ColorfulTile> {
         icon: Icons.chevron_left,
         onTap: (state) {
           state.moveTileLeft(widget.data);
-          hideControls();
+          _inside = false;
+          delayedHideControls();
         },
       ),
       AlignedIconButton(
@@ -256,22 +265,37 @@ class _ColorfulTileState extends State<ColorfulTile> {
         icon: Icons.chevron_right,
         onTap: (state) {
           state.moveTileRight(widget.data);
-          hideControls();
+          _inside = false;
+          delayedHideControls();
         },
       ),
     ]);
   }
 
-  void toggleControls() {
-    setState(() => controlsVisible = !controlsVisible);
-  }
-
   void hideControls() {
-    setState(() => controlsVisible = false);
+    setState(() {
+      _controlsVisible = false;
+    });
   }
 
   void showControls() {
-    setState(() => controlsVisible = true);
+    setState(() {
+      _controlsVisible = true;
+    });
+  }
+
+  void delayedHideControls({int milliseconds = 1500}) {
+    _onExitActive = false;
+    showControls();
+    Future<void>.delayed(
+      Duration(milliseconds: milliseconds),
+      () {
+        if (!_inside) {
+          hideControls();
+        }
+        _onExitActive = true;
+      },
+    );
   }
 
   @override
@@ -286,21 +310,35 @@ class _ColorfulTileState extends State<ColorfulTile> {
             alignment: Alignment.center,
             child: Text(widget.data.id.toString()),
           ),
-          if (controlsVisible) ..._buttons,
+          if (_controlsVisible) ..._buttons,
         ],
       ),
     );
 
     if (isDesktop()) {
       return MouseRegion(
-        onHover: (_) => showControls(),
-        onExit: (_) => hideControls(),
+        onEnter: (_) {
+          _inside = true;
+          showControls();
+        },
+        onExit: (_) {
+          _inside = false;
+          if (_onExitActive) {
+            hideControls();
+          }
+        },
         child: container,
       );
     } else {
       return TapRegion(
-        onTapInside: (_) => showControls(),
-        onTapOutside: (_) => hideControls(),
+        onTapInside: (_) {
+          _inside = true;
+          showControls();
+        },
+        onTapOutside: (_) {
+          _inside = false;
+          hideControls();
+        },
         child: container,
       );
     }
