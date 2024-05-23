@@ -1,9 +1,14 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(const MyApp());
+
+bool isDesktop() {
+  return (Platform.isMacOS || Platform.isLinux || Platform.isWindows);
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -207,9 +212,8 @@ class ColorfulTile extends StatefulWidget {
   final ColorfulTileData data;
   final Color iconColor;
 
-  ColorfulTile(
-    this.data,
-  )   : iconColor = getContrastingColor(data.color),
+  ColorfulTile(this.data)
+      : iconColor = getContrastingColor(data.color),
         super(key: ValueKey(data.id));
 
   @override
@@ -272,27 +276,34 @@ class _ColorfulTileState extends State<ColorfulTile> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: toggleControls,
-      child: MouseRegion(
-        onHover: (_) => showControls(),
-        onExit: (_) => hideControls(),
-        child: Container(
-          color: widget.data.color,
-          height: 140.0,
-          width: 140.0,
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Text(widget.data.id.toString()),
-              ),
-              if (controlsVisible) ..._buttons,
-            ],
+    var container = Container(
+      color: widget.data.color,
+      height: 140.0,
+      width: 140.0,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Text(widget.data.id.toString()),
           ),
-        ),
+          if (controlsVisible) ..._buttons,
+        ],
       ),
     );
+
+    if (isDesktop()) {
+      return MouseRegion(
+        onHover: (_) => showControls(),
+        onExit: (_) => hideControls(),
+        child: container,
+      );
+    } else {
+      return TapRegion(
+        onTapInside: (_) => showControls(),
+        onTapOutside: (_) => hideControls(),
+        child: container,
+      );
+    }
   }
 }
 
