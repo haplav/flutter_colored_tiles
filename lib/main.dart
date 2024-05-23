@@ -254,18 +254,12 @@ class ColorfulTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicWidth(
-      child: IntrinsicHeight(
-        child: Stack(
-          children: [
-            Container(
-              color: data.color,
-              height: 140.0,
-              width: 140.0,
-            ),
-            ..._buttons,
-          ],
-        ),
+    return Container(
+      color: data.color,
+      height: 140.0,
+      width: 140.0,
+      child: Stack(
+        children: _buttons,
       ),
     );
   }
