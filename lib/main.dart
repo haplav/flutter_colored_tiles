@@ -203,7 +203,7 @@ class AlignedIconButton extends StatelessWidget {
   }
 }
 
-class ColorfulTile extends StatelessWidget {
+class ColorfulTile extends StatefulWidget {
   final ColorfulTileData data;
   final Color iconColor;
 
@@ -212,53 +212,85 @@ class ColorfulTile extends StatelessWidget {
   )   : iconColor = getContrastingColor(data.color),
         super(key: ValueKey(data.id));
 
+  @override
+  State<ColorfulTile> createState() => _ColorfulTileState();
+}
+
+class _ColorfulTileState extends State<ColorfulTile> {
+  bool controlsVisible = false;
+
   List<AlignedIconButton> get _buttons {
     return List<AlignedIconButton>.unmodifiable([
       AlignedIconButton(
         alignment: Alignment.topLeft,
-        color: iconColor,
+        color: widget.iconColor,
         description: "Change tile color",
         icon: Icons.refresh,
-        onTap: (state) => state.changeTileColor(data),
+        onTap: (state) => state.changeTileColor(widget.data),
       ),
       AlignedIconButton(
         alignment: Alignment.topRight,
-        color: iconColor,
+        color: widget.iconColor,
         description: "Remove tile",
         icon: Icons.close,
-        onTap: (state) => state.removeTile(data),
+        onTap: (state) => state.removeTile(widget.data),
       ),
       AlignedIconButton(
         alignment: Alignment.bottomLeft,
-        color: iconColor,
+        color: widget.iconColor,
         description: "Move tile left",
         icon: Icons.chevron_left,
-        onTap: (state) => state.moveTileLeft(data),
+        onTap: (state) {
+          state.moveTileLeft(widget.data);
+          hideControls();
+        },
       ),
       AlignedIconButton(
         alignment: Alignment.bottomRight,
-        color: iconColor,
+        color: widget.iconColor,
         description: "Move tile right",
         icon: Icons.chevron_right,
-        onTap: (state) => state.moveTileRight(data),
+        onTap: (state) {
+          state.moveTileRight(widget.data);
+          hideControls();
+        },
       ),
     ]);
   }
 
+  void toggleControls() {
+    setState(() => controlsVisible = !controlsVisible);
+  }
+
+  void hideControls() {
+    setState(() => controlsVisible = false);
+  }
+
+  void showControls() {
+    setState(() => controlsVisible = true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: data.color,
-      height: 140.0,
-      width: 140.0,
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Text(data.id.toString()),
+    return GestureDetector(
+      onTap: toggleControls,
+      child: MouseRegion(
+        onHover: (_) => showControls(),
+        onExit: (_) => hideControls(),
+        child: Container(
+          color: widget.data.color,
+          height: 140.0,
+          width: 140.0,
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Text(widget.data.id.toString()),
+              ),
+              if (controlsVisible) ..._buttons,
+            ],
           ),
-          ..._buttons
-        ],
+        ),
       ),
     );
   }
