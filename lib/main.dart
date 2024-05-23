@@ -211,9 +211,9 @@ class ColorfulTile extends StatelessWidget {
   final Color iconColor;
 
   ColorfulTile(
-    this.data, {
-    super.key,
-  }) : iconColor = getContrastingColor(data.color);
+    this.data,
+  )   : iconColor = getContrastingColor(data.color),
+        super(key: ValueKey(data.id));
 
   static List<AlignedIconConfig> get controls {
     return [
@@ -266,10 +266,14 @@ class ColorfulTile extends StatelessWidget {
 }
 
 class ColorfulTileData {
+  static int _nextId = 0;
+
+  final int id;
   Color color;
 
   ColorfulTileData({Color? color})
-      : color = color ?? UniqueColorGenerator.getColor();
+      : color = color ?? UniqueColorGenerator.getColor(),
+        id = _nextId++;
 }
 
 class UniqueColorGenerator {
