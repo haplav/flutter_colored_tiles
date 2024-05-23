@@ -14,7 +14,10 @@ class MyApp extends StatelessWidget {
       create: (context) => PositionedTilesState(3),
       child: const MaterialApp(
         home: Scaffold(
-          body: PositionedTiles(),
+          body: Align(
+            alignment: Alignment.centerLeft,
+            child: PositionedTiles(),
+          ),
           floatingActionButton: FloatingButtons(),
         ),
       ),
