@@ -173,70 +173,100 @@ Color getContrastingColor(Color color) {
   return brightness == Brightness.light ? Colors.black : Colors.white;
 }
 
-class ColorfulTile extends StatelessWidget {
+typedef AlignedIconConfig = ({
+  AlignmentGeometry alignment,
+  String description,
+  IconData icon,
+  Function(PositionedTilesState, ColorfulTileData) onTap,
+});
+
+class AlignedIconButton extends StatelessWidget {
+  final AlignedIconConfig cfg;
+  final Color color;
   final ColorfulTileData data;
 
-  const ColorfulTile(
-    this.data, {
+  const AlignedIconButton(
+    this.cfg, {
     super.key,
+    required this.color,
+    required this.data,
   });
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<PositionedTilesState>();
-    final iconColor = getContrastingColor(data.color);
-    return Stack(
-      children: [
-        Container(
-          color: data.color,
-          height: 140.0,
-          width: 140.0,
-        ),
-        Positioned(
-          top: 0.0,
-          left: 0.0,
-          child: IconButton(
-            onPressed: () => state.changeTileColor(data),
-            icon: const Icon(Icons.refresh),
-            iconSize: 15.0,
+    return Align(
+        alignment: cfg.alignment,
+        child: IconButton(
+          icon: Icon(cfg.icon, color: color),
+          iconSize: 15.0,
+          onPressed: () => cfg.onTap(state, data),
+          tooltip: cfg.description,
+        ));
+  }
+}
+
+class ColorfulTile extends StatelessWidget {
+  final ColorfulTileData data;
+  final Color iconColor;
+
+  ColorfulTile(
+    this.data, {
+    super.key,
+  }) : iconColor = getContrastingColor(data.color);
+
+  static List<AlignedIconConfig> get controls {
+    return [
+      (
+        alignment: Alignment.topLeft,
+        description: "Change tile color",
+        icon: Icons.refresh,
+        onTap: (state, data) => state.changeTileColor(data),
+      ),
+      (
+        alignment: Alignment.topRight,
+        description: "Remove tile",
+        icon: Icons.close,
+        onTap: (state, data) => state.removeTile(data),
+      ),
+      (
+        alignment: Alignment.bottomLeft,
+        description: "Move tile left",
+        icon: Icons.chevron_left,
+        onTap: (state, data) => state.moveTileLeft(data),
+      ),
+      (
+        alignment: Alignment.bottomRight,
+        description: "Move tile right",
+        icon: Icons.chevron_right,
+        onTap: (state, data) => state.moveTileRight(data),
+      ),
+    ];
+  }
+
+  List<AlignedIconButton> get _buttons => controls
+      .map((e) => AlignedIconButton(
+            e,
             color: iconColor,
-            tooltip: "Change tile color",
-          ),
+            data: data,
+          ))
+      .toList();
+
+  @override
+  Widget build(BuildContext context) {
+    return IntrinsicWidth(
+      child: IntrinsicHeight(
+        child: Stack(
+          children: [
+            Container(
+              color: data.color,
+              height: 140.0,
+              width: 140.0,
+            ),
+            ..._buttons,
+          ],
         ),
-        Positioned(
-          top: 0.0,
-          right: 0.0,
-          child: IconButton(
-            onPressed: () => state.removeTile(data),
-            icon: const Icon(Icons.close),
-            iconSize: 15.0,
-            color: iconColor,
-            tooltip: "Remove tile",
-          ),
-        ),
-        Positioned(
-          bottom: 0.0,
-          left: 0.0,
-          child: IconButton(
-            onPressed: () => state.moveTileLeft(data),
-            icon: const Icon(Icons.keyboard_arrow_left),
-            iconSize: 18.0,
-            color: iconColor,
-            tooltip: "Move tile left",
-          ),
-        ),
-        Positioned(
-          bottom: 0.0,
-          right: 0.0,
-          child: IconButton(
-            onPressed: () => state.moveTileRight(data),
-            icon: const Icon(Icons.keyboard_arrow_right),
-            iconSize: 18.0,
-            color: iconColor,
-            tooltip: "Move tile right",
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
