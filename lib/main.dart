@@ -69,9 +69,10 @@ class PositionedTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<PositionedTilesState>();
 
-    List<Widget> tiles =
-        state.tileDataList.map((data) => ColorfulTile(data) as Widget).toList();
-    tiles.add(const AddingTile());
+    List<Widget> tiles = [
+      ...state.tileDataList.map((data) => ColorfulTile(data) as Widget),
+      const AddingTile(),
+    ];
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
