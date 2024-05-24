@@ -308,7 +308,10 @@ class _ColorfulTileState extends State<ColorfulTile> {
         children: [
           Align(
             alignment: Alignment.center,
-            child: Text(widget.data.id.toString()),
+            child: Text(
+              widget.data.id.toString(),
+              style: TextStyle(color: widget.iconColor),
+            ),
           ),
           if (_controlsVisible) ..._buttons,
         ],
