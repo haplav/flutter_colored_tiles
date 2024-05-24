@@ -71,7 +71,7 @@ class PositionedTiles extends StatelessWidget {
 
     List<Widget> tiles =
         state.tileDataList.map((data) => ColorfulTile(data) as Widget).toList();
-    tiles.add(AddingTile(onTap: state.addTile));
+    tiles.add(const AddingTile());
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -145,14 +145,14 @@ class PositionedTilesState extends ChangeNotifier {
 }
 
 class AddingTile extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const AddingTile({super.key, required this.onTap});
+  const AddingTile({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<PositionedTilesState>();
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: state.addTile,
       child: Tooltip(
         message: "Add a new tile",
         child: DecoratedBox(
